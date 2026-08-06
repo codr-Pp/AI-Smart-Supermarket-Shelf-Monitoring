@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Intelligent Supermarket Shelf Monitoring and Stock Auditing System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top, #141414, #000000);
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+/* ---------- HEADER ---------- */
+header {
+    padding: 22px 40px;
+    border-bottom: 1px solid #222;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-shadow:
+        0 0 10px rgba(229,9,20,0.8),
+        0 0 20px rgba(229,9,20,0.6),
+        0 0 40px rgba(229,9,20,0.4);
+    animation: glowPulse 2.5s infinite alternate;
+}
+
+@keyframes glowPulse {
+    from { text-shadow: 0 0 10px rgba(229,9,20,0.6); }
+    to   { text-shadow: 0 0 28px rgba(229,9,20,1); }
+}
+
+/* ---------- LAYOUT ---------- */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+/* ---------- CARDS ---------- */
+.card {
+    background: linear-gradient(180deg, #181818, #0f0f0f);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    transition: transform 0.3s ease;
+    animation: fadeUp 0.8s ease forwards;
+    opacity: 0;
+}
+
+.card:nth-child(1) { animation-delay: 0.2s; }
+.card:nth-child(2) { animation-delay: 0.4s; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card:hover { transform: translateY(-6px); }
+
+.card h2 {
+    margin-top: 0;
+    font-weight: 600;
+}
+
+/* ---------- IMAGE ---------- */
+#resultImage {
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 14px;
+    border: 1px solid #222;
+    display: none;
+}
+
+/* ---------- STATS ---------- */
+.stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.stat { text-align: center; }
+
+.stat label {
+    display: block;
+    font-size: 14px;
+    opacity: 0.6;
+}
+
+.stat span {
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.campa { color: #00e676; }
+.non-campa { color: #e50914; }
+
+/* ---------- ALERT ---------- */
+#alertBox {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #e50914, #b00610);
+    padding: 18px 26px;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 0 40px rgba(229,9,20,0.8);
+    display: none;
+    animation: pulse 1s infinite;
+    z-index: 10;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ---------- BUTTONS ---------- */
+.export-btn {
+    margin-top: 25px;
+    background: #e50914;
+    border: none;
+    color: white;
+    padding: 14px 26px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(229,9,20,0.6);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.export-btn:hover {
+    transform: scale(1.05);
+    box-shadow:
+        0 0 15px rgba(229,9,20,0.9),
+        0 0 35px rgba(229,9,20,0.7);
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+    text-align: center;
+    padding: 20px;
+    opacity: 0.4;
+    font-size: 13px;
+}
+
+/* ---------- CURSOR GLOW ---------- */
+#cursor-glow {
+    position: fixed;
+    width: 220px;
+    height: 220px;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(229,9,20,0.25),
+        rgba(229,9,20,0.05),
+        transparent 70%);
+    filter: blur(25px);
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="cursor-glow"></div>
+
+<header>
+    <div class="title">
+        Intelligent Supermarket Shelf Monitoring and Stock Auditing System
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Latest Detection</h2>
+        <img id="resultImage" src="" alt="Waiting for detection...">
+    </div>
+
+    <div class="card">
+        <h2>Detection Summary</h2>
+
+        <div class="stats">
+            <div class="stat">
+                <label>Campa</label>
+                <span id="campaCount" class="campa">0</span>
+            </div>
+
+            <div class="stat" id="spriteStat" style="display:none;">
+                <label>Sprite</label>
+                <span id="spriteCount" class="non-campa">0</span>
+            </div>
+        </div>
+
+        <button class="export-btn" onclick="window.location.href='/export-report'">
+            ⬇ Export Detection Report
+        </button>
+
+        <button class="export-btn" onclick="window.location.href='/export-ml-report'">
+            🧠 Export ML Analysis Report
+        </button>
+    </div>
+
+</div>
+
+<div id="alertBox">
+    🚨 SPRITE BOTTLE DETECTED
+</div>
+
+<audio id="beep">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-tone-996.mp3" type="audio/mpeg">
+</audio>
+
+<footer>
+    YOLOv8 • ESP32-CAM • Cloudinary • Flask
+</footer>
+
+<script>
+let lastAlert = false;
+
+/* ---- CURSOR GLOW ---- */
+document.addEventListener("mousemove", (e) => {
+    const glow = document.getElementById("cursor-glow");
+    glow.style.left = e.clientX + "px";
+    glow.style.top = e.clientY + "px";
+});
+
+/* ---- FETCH DATA ---- */
+async function fetchLatest() {
+    try {
+        const res = await fetch("/latest");
+        const data = await res.json();
+
+        document.getElementById("campaCount").innerText = data.campa;
+
+        const spriteStat = document.getElementById("spriteStat");
+        const spriteCount = document.getElementById("spriteCount");
+
+        if (data.sprite > 0) {
+            spriteCount.innerText = data.sprite;
+            spriteStat.style.display = "block";
+        } else {
+            spriteStat.style.display = "none";
+        }
+
+        if (data.image_url) {
+            const img = document.getElementById("resultImage");
+            img.src = data.image_url + "?t=" + Date.now();
+            img.style.display = "block";
+        }
+
+        const alertBox = document.getElementById("alertBox");
+        const beep = document.getElementById("beep");
+
+        if (data.alert && !lastAlert) {
+            alertBox.style.display = "block";
+            beep.play();
+            lastAlert = true;
+        }
+
+        if (!data.alert) {
+            alertBox.style.display = "none";
+            lastAlert = false;
+        }
+
+    } catch (e) {
+        console.error("Dashboard update error:", e);
+    }
+}
+
+setInterval(fetchLatest, 1000);
+</script>
+
+</body>
+</html>

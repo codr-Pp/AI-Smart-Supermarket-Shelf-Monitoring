@@ -1,0 +1,8 @@
+flask
+opencv-python
+ultralytics
+cloudinary
+reportlab
+requests
+minio
+pytest
