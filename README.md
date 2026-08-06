@@ -1,83 +1,108 @@
-# Intelligent Supermarket Shelf Monitoring System
+# AI-Powered Smart Supermarket Shelf Monitoring & Inventory Auditing System
 
-AI-powered Flask backend for supermarket shelf monitoring, stock auditing, and misplaced-product alerting using YOLOv8, ESP32-CAM image uploads, Cloudinary image hosting, email alerts, and PDF report exports.
+An AI-powered inventory monitoring system that automates supermarket shelf auditing using **ESP32-CAM**, **YOLOv8**, and **Flask**. The system captures shelf images, detects products in real time, monitors stock availability, identifies misplaced items, and provides inventory insights through an interactive dashboard.
 
 ## Features
 
-- Real-time image upload endpoint for ESP32-CAM frames
-- YOLOv8-based Campa and Sprite bottle detection
-- Low-stock and misplaced-product alerts
-- Cloudinary upload for annotated detection images
-- Dashboard for latest detection status
-- PDF stock trend and ML performance reports
+- Real-time shelf image capture using ESP32-CAM
+- Product detection using a custom-trained YOLOv8 model
+- Automated inventory monitoring and stock counting
+- Misplaced product detection
+- Low-stock email alerts
+- Annotated image storage using Cloudinary
+- Interactive Flask dashboard
+- PDF report generation for inventory and model performance
+
+## Tech Stack
+
+- Python
+- Flask
+- YOLOv8
+- OpenCV
+- ESP32-CAM
+- Cloudinary
+- HTML, CSS & JavaScript
 
 ## Project Structure
 
 ```text
 app/
-  routes/      Flask route handlers
-  services/    Detection and storage helper modules
-  models/      Model-related adapters and future model code
-  utils/       Shared utilities
-  templates/   Flask templates
-  static/      Static dashboard assets and generated visual outputs
-docs/          Architecture and project documentation
-screenshots/   UI screenshots for README/demo material
-sample_images/ Sample inputs for demos and testing
-paper/         Research paper or project report assets
-tests/         Automated tests
+  routes/
+  services/
+  models/
+  utils/
+  templates/
+  static/
+
+docs/
+firmware/
+paper/
+screenshots/
+sample_images/
+tests/
+
+run.py
+requirements.txt
+README.md
 ```
 
-## Setup
+## Getting Started
 
-1. Create and activate a virtual environment.
+### 1. Clone the repository
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
+git clone https://github.com/<your-username>/AI-Smart-Supermarket-Shelf-Monitoring.git
 ```
 
-2. Install dependencies.
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Configure environment variables.
+### 3. Configure environment variables
 
-```bash
-copy .env.example .env
-```
+Copy `.env.example` to `.env` and update the required credentials.
 
-4. Run the application.
+### 4. Run the application
 
 ```bash
 python run.py
 ```
 
-The dashboard runs at `http://127.0.0.1:5000`.
+Open:
+
+```
+http://127.0.0.1:5000
+```
 
 ## API Endpoints
 
-- `GET /` - dashboard
-- `POST /upload` - upload a raw camera frame for detection
-- `GET /latest` - latest detection result as JSON
-- `GET /export-report` - stock trend PDF report
-- `GET /export-ml-report` - ML performance PDF report
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | Dashboard |
+| POST | `/upload` | Upload shelf image |
+| GET | `/latest` | Latest detection result |
+| GET | `/export-report` | Inventory report |
+| GET | `/export-ml-report` | ML performance report |
 
-## Model Assets
+## Model
 
-The current application loads the YOLO model from:
+The application uses a custom-trained YOLOv8 model located at:
 
-```text
+```
 runs/detect/train/weights/best.pt
 ```
 
-Keep this file in place or set `MODEL_PATH` in your environment.
+Update `MODEL_PATH` if the model is stored elsewhere.
 
-## Security Note
+## Future Improvements
 
-Before publishing publicly, rotate any previously committed API keys or app passwords. Runtime secrets should be stored in `.env` or deployment environment variables, never in source control.
+- Cloud deployment
+- Multi-camera support
+- Barcode integration
+- Mobile notifications
+- Inventory analytics dashboard
 
 ## License
 
